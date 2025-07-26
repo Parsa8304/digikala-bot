@@ -1,0 +1,8 @@
+{
+"app":"digikala-bot",
+    "port":80,
+    "build":{
+"location":"iran"
+    },
+    "disks":[]
+}
