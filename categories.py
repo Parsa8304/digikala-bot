@@ -16,50 +16,75 @@ logging.basicConfig(
 
 api_token: Final = os.environ.get("DIGIKALA_TOKEN")
 
-async def get_categories(api_token: str) -> list:
-    url = "https://shopapi.ir/api/v1/digikala/category/products/mobile/"
-    headers = {"Authorization": f"Bearer {api_token}"}
-    async with httpx.AsyncClient(
-        timeout=httpx.Timeout(connect=5, read=5, write=5, pool=5)
-    ) as client:
-        try:
-            response = await client.get(url, headers=headers)
-            logging.debug(f"ShopAPI response: status={response.status_code}, content={response.text}")
-            response.raise_for_status()
-            data = response.json()
-            categories = []
-            for category in data.get("data", {}).get("categories", []):
-                categories.append({
-                    "name": category.get("title_fa", "N/A"),
-                    "slug": category.get("slug", "")
-                })
-                for subcategory in category.get("subcategories", []):
-                    categories.append({
-                        "name": subcategory.get("title_fa", "N/A"),
-                        "slug": subcategory.get("slug", "")
-                    })
-            if not categories:
-                logging.warning("No categories found in response")
-            return categories
-        except httpx.HTTPStatusError as e:
-            logging.error(f"HTTP error fetching categories: status={e.response.status_code}, content={e.response.text}")
-            return []
-        except httpx.RequestError as e:
-            logging.error(f"Network error fetching categories: {e}")
-            return []
-        except KeyError as e:
-            logging.error(f"Unexpected response structure: {e}, response={response.text}")
-            return []
-        except Exception as e:
-            logging.error(f"Unexpected error fetching categories: {e}")
-            return []
+
+
+
+
+CATEGORIES :Final= [
+    {"id": 1, "name": "electronic-devices"},
+    {"id": 2, "name": "home-and-kitchen"},
+    {"id": 3, "name": "apparel"},
+    {"id": 4, "name": "food-beverage"},
+    {"id": 5, "name": "book-and-media"},
+    {"id": 6, "name": "mother-and-child"},
+    {"id": 7, "name": "personal-appliance"},
+    {"id": 8, "name": "sport-entertainment"},
+    {"id": 9, "name": "vehicles-spare-parts"},
+    {"id": 10, "name": "rural-products"},
+    {"id": 11, "name": "dk-ds-gift-cards"}
+]
+def get_category() -> list:
+    """Return a list of categories."""
+    return CATEGORIES
+
+
+
+
+
+# async def get_categories(api_token: str) -> list:
+#     url = "https://shopapi.ir/api/v1/digikala/category/products/mobile/"
+#     headers = {"Authorization": f"Bearer {api_token}"}
+#     async with httpx.AsyncClient(
+#         timeout=httpx.Timeout(connect=5, read=5, write=5, pool=5)
+#     ) as client:
+#         try:
+#             response = await client.get(url, headers=headers)
+#             logging.debug(f"ShopAPI response: status={response.status_code}, content={response.text}")
+#             response.raise_for_status()
+#             data = response.json()
+#             categories = []
+#             for category in data.get("data", {}).get("categories", []):
+#                 categories.append({
+#                     "name": category.get("title_fa", "N/A"),
+#                     "slug": category.get("slug", "")
+#                 })
+#                 for subcategory in category.get("subcategories", []):
+#                     categories.append({
+#                         "name": subcategory.get("title_fa", "N/A"),
+#                         "slug": subcategory.get("slug", "")
+#                     })
+#             if not categories:
+#                 logging.warning("No categories found in response")
+#             return categories
+#         except httpx.HTTPStatusError as e:
+#             logging.error(f"HTTP error fetching categories: status={e.response.status_code}, content={e.response.text}")
+#             return []
+#         except httpx.RequestError as e:
+#             logging.error(f"Network error fetching categories: {e}")
+#             return []
+#         except KeyError as e:
+#             logging.error(f"Unexpected response structure: {e}, response={response.text}")
+#             return []
+#         except Exception as e:
+#             logging.error(f"Unexpected error fetching categories: {e}")
+#             return []
 
 async def test_get_categories():
     if not api_token:
         logging.error("DIGIKALA_TOKEN environment variable not set.")
         return
     logging.info("Testing get_categories function...")
-    categories = await get_categories(api_token)
+    categories = await get_category(api_token)
     if categories:
         logging.info(f"Retrieved {len(categories)} categories:")
         for cat in categories[:5]:  # Print first 5 for brevity
