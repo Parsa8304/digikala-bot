@@ -11,8 +11,8 @@ from telegram.ext import (
     ConversationHandler,
 )
 from telegram.request import HTTPXRequest
-from categories import get_category
-from products import get_discounted_products, get_product_by_dkp
+from src.categories import get_category
+from src.products import get_discounted_products, get_product_by_dkp
 from typing import Final, List, Dict
 import dotenv
 import aiohttp
